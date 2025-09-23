@@ -23,4 +23,6 @@ int main(){
     printf("Multiplicacao: %d\n", mult);
     printf("Divisao: %.2f\n", div);
     printf("Quadrado da subtracao: %d\n", qs);
+
+    return 0;
 }
