@@ -4,7 +4,6 @@
 #include <locale.h>
 
 int main() {
-    system("chcp 65001");
 
     int n;
     bool primo = true;
