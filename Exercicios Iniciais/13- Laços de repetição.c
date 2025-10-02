@@ -3,7 +3,7 @@
 
 
 int main(){
-    system("chcp 65001");
+    
     int cont, num, soma = 0, maior = 0, menor = 0, cont_validos = 0;
     int primeiro = 1;
     float media;
