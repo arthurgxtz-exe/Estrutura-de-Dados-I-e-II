@@ -1,0 +1,27 @@
+# Arquivos de sistema operacional (macOS, Windows, Linux)
+.DS_Store
+Thumbs.db
+
+# Arquivos de log e temporários
+*.log
+*.tmp
+*.temp
+
+# Pastas de configuração de editores e IDEs populares
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Pastas de build/compilação comuns (onde os .exe e .o são gerados)
+build/
+bin/
+obj/
+
+# Arquivos de compilação, bibliotecas e executáveis
+*.o          # Arquivos objeto
+*.a          # Bibliotecas estáticas
+*.so         # Bibliotecas dinâmicas (Linux/macOS)
+*.dll        # Bibliotecas dinâmicas (Windows)
+*.exe        # Executáveis (Windows)
+*.out        # Executáveis (Linux/macOS)
