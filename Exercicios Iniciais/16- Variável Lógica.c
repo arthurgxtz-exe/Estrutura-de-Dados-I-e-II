@@ -3,7 +3,6 @@
 #include <stdbool.h>
 
 int main() {
-    system("chcp 65001");
 
     int n;
     int maior_menor_primo = 0, menor_maior_primo = 0;
