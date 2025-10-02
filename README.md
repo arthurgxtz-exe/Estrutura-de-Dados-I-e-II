@@ -1,6 +1,6 @@
 # Estrutura de Dados e Algoritmos
 
-O objetivo deste repositório é guardar como referência de estudo, a implementação das estruturas e algoritmos que se aprende nesta disciplina. A linguagem que irei utilizar é C, devido a pelo menos dois pontos que **EU** acho didaticamente interessante:
+O objetivo deste repositório é guardar como referência de estudo, a implementação das estruturas e algoritmos que se aprende nesta disciplina. A linguagem que irei utilizar é C, devido a pelo menos três pontos que **EU** acho didaticamente interessante:
 
 - **Simplicidade e clareza**: A sintaxe da linguagem C é relativamente simples, o que facilita a compreensão. Apenas pela leitura do código, você consegue ter uma noção do que está sendo feito e isso fará com que você foque mais nos conceitos da disciplina do que nos detalhes da linguagem em si.
 
