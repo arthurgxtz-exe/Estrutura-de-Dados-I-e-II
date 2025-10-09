@@ -67,5 +67,6 @@ int main() {
     printf("--- FIM DE JOGO ---\n\n");
     printf("Voce obteve %d/%d acertos!\n", pontuacao, 10);
     system("pause");
+
     return 0;
 }
