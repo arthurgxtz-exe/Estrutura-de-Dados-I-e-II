@@ -50,7 +50,6 @@ int main() {
         printf("QUAL ERA O VALOR DIFERENTE >>> ");
         scanf("%d", &palpite);
 
-        
         if (palpite == num_diferente) {
             printf("\nAcertou! \\o/\n");
             pontuacao++;
@@ -62,11 +61,10 @@ int main() {
         while (getchar() != '\n');
         getchar();
     }
-
+        
     system("cls");
     printf("--- FIM DE JOGO ---\n\n");
     printf("Voce obteve %d/%d acertos!\n", pontuacao, 10);
     system("pause");
-
     return 0;
 }
