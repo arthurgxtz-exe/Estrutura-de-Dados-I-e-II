@@ -17,7 +17,7 @@ int main() {
     printf("O PC já escolheu um número entre 0 a 99.\n");
     printf("Tente adivinhar o mais breve possível!\n");
     printf("Pressione enter  quando estiver pronto...\n");
-    fflush(stdin);
+    while (getchar() != '\n');
     getchar();
     system("cls");
 
@@ -45,7 +45,7 @@ int main() {
     printf("Parabéns, você acertou o número após %d tentativas.\n\n", tentativas_hum);
     printf("\nChegou a hora do Pc competir contra você!\n");
     printf("Tecle enter para continuar...\n");
-    fflush(stdin);
+    while (getchar() != '\n');
     getchar();
     system("cls");
 
@@ -53,7 +53,7 @@ int main() {
     printf("Agora você deve pensar em um número de 0 a 99.\n");
     printf("O PC tentará adivinhar. Responda com '>', '<' ou '='.\n");
     printf("Pressione enter quando estiver pronto...\n");
-    fflush(stdin);
+    while (getchar() != '\n');
     getchar();
     system("cls");
 
