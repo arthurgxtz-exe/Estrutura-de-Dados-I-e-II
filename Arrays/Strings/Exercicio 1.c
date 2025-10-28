@@ -36,7 +36,7 @@ int main() {
         printf("\nSenha gerada da tentativa %d:\n", i + 1);
         printf("Sua senha é:\n");
         printf("%s\n", senha);
-        printf("Tammanho da senha: %d caracteres.\n", strlen(senha));
+        printf("Tamanho da senha: %d caracteres.\n", strlen(senha));
         
     }
     printf("Programa finalizado.\n");
