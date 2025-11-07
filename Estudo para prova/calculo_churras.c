@@ -39,7 +39,7 @@ int main() {
     printf("----------------------------\n");
     printf("Valor total do churrasco: R$ %.2f\n", totalGeral);
     printf("Cada pessoa deve contribuir com: R$ %.2f\n", valorPorPessoa);
-    printf("OBS: Esse valor não leva em consideração bebidas alcólicas.")
+    printf("OBS: Esse valor não leva em consideração bebidas alcólicas.");
     
 
     return 0;
