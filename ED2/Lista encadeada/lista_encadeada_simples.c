@@ -94,7 +94,7 @@ int menu(){
 int main() {
 
     No *lista = NULL;
-    int op, valor, ant, prox;
+    int op, valor, ant;
 
     do{
         op = menu();
