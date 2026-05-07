@@ -20,7 +20,7 @@ void inserir_inicio(No **lista, int num){
 
 void inserir_fim(No **lista, int num){
     No *novo = malloc(sizeof(No));
-    No *aux = malloc(sizeof(No));
+    No *aux;
     if(novo){
         novo->valor = num;
         novo->proximo = NULL;
@@ -32,8 +32,8 @@ void inserir_fim(No **lista, int num){
             aux = *lista;
              while(aux->proximo){
                 aux = aux->proximo;
-                aux->proximo = novo;
-             }
+            }
+            aux->proximo = novo;
         }
 
     }
@@ -46,17 +46,18 @@ void inserir_meio(No **lista, int num, int ant){
 
      if(novo){
          novo->valor = num;
-         //novo é o primeiro?
-
+         
          if(*lista == NULL){
             novo->proximo = NULL;
             *lista = novo; 
          }
          else{
             aux = *lista;
-            while( aux->valor != ant){
-                
+            while( aux->valor != ant && aux->proximo != NULL){
+                aux = aux->proximo;
             }
+            novo->proximo = aux->proximo;
+            aux->proximo = novo;
          }
     
      }
@@ -68,42 +69,64 @@ void inserir_meio(No **lista, int num, int ant){
 }
 
 void imprimir_lista(No *head){
-    printf("\nLista de valores\n");
+    printf("\n\tLista de valores: ");
 
     No *atual = head;
 
     while(atual != NULL){
-        printf("%d \n", atual->valor);
+        printf("|%d|", atual->valor);
         atual = atual->proximo;
     }
 }
 
-void menu(){
+int menu(){
     int op;
+    printf("\nMENU\n");
     printf("1 - Inserir no inicio\n");
     printf("2 - Inserir no meio \n");
     printf("3 - Inserir no Final\n");
     printf("4 - Listar valores da lista\n");
+    printf("0 - SAIR\n");
     scanf("%d", &op);
     return op;
 }
 
 int main() {
 
-    No lista;
-    int op;
+    No *lista = NULL;
+    int op, valor, ant, prox;
+
     do{
         op = menu();
         switch(op){
             case 1:
+                printf("Digite um valor: \n");
+                while(getchar() != '\n');
+                scanf("%d", &valor);
+                inserir_inicio(&lista, valor);
                 break;
             case 2:
+                printf("Digite um valor: \n");
+                while(getchar() != '\n');
+                scanf("%d", &valor);
+                printf("Digite o valor de referencia: \n");
+                scanf("%d", &ant);
+                inserir_meio(&lista, valor, ant);
                 break;
             case 3:
+                printf("Digite um valor: \n");
+                while(getchar() != '\n');
+                scanf("%d", &valor);
+                inserir_fim(&lista, valor);
                 break;
             case 4:
+                imprimir_lista(lista);
+                break;
+            case 0: 
+                printf("Encerrando programa...\n");
                 break;
             default:
+                printf("Opção invalida!");
                 break;
         }
 
