@@ -8,81 +8,95 @@ struct no *proximo;
 
 typedef struct Lista{
     No *head;
+    No *tail;
     int tam;
 }Lista;
 
 void criar_lista(Lista *lista){
     lista->head = NULL;
+    lista->tail = NULL;
     lista->tam = 0;
 }
 
 
-void inserir_inicio(No **lista, int num){
+void inserir_inicio(Lista *l, int num){
     No *novo = malloc(sizeof(No));
 
     if (novo){
         novo->valor = num;
-        novo->proximo = *lista;
-        *lista = novo;
+        novo->proximo = l->head;
+        l->head = novo;
+        
+        if(l->tail == NULL){
+            l->tail = novo;
+        }
+        
+        l->tam++;
     }
+        
     else
         printf("Erro ao alocar memoria.\n");
 }
 
-void inserir_fim(No **lista, int num){
+void inserir_fim(Lista *l, int num){
     No *novo = malloc(sizeof(No));
-    No *aux;
+    
     if(novo){
         novo->valor = num;
         novo->proximo = NULL;
         //é o primeiro?
-        if(*lista == NULL){
-            *lista = novo;
+        if(l->head == NULL){
+            l->head = novo;
+            l->tail = novo;
         }
         else{
-            aux = *lista;
-             while(aux->proximo){
-                aux = aux->proximo;
-            }
-            aux->proximo = novo;
+            l->tail->proximo = novo;
+            l->tail = novo;
         }
-
+    
+        l->tam++;
     }
     else 
         printf("Erro ao alocar memoria.\n");
 }
 
-void inserir_meio(No **lista, int num, int ant){
-     No *aux, *novo = malloc(sizeof(No));
-
-     if(novo){
-         novo->valor = num;
-         
-         if(*lista == NULL){
-            novo->proximo = NULL;
-            *lista = novo; 
-         }
-         else{
-            aux = *lista;
-            while( aux->valor != ant && aux->proximo != NULL){
-                aux = aux->proximo;
-            }
-            novo->proximo = aux->proximo;
-            aux->proximo = novo;
-         }
+void inserir_meio(Lista *l, int num, int ant){
+    if(l->head == NULL){
+        inserir_inicio(l, num);
+        return;
+    }
     
-     }
-     else{
-        printf("Erro ao alocar memoria!\n");
-     }
+    
+    No *novo = malloc(sizeof(No));
 
+    if(novo){
+        novo->valor = num;
+        No *aux = l->head;
+        while(aux->valor != ant && aux->proximo != NULL){
+            aux = aux->proximo;
+        }
+
+        novo->proximo = aux->proximo;
+        aux->proximo = novo;
+
+        if(novo->proximo == NULL){
+            l->tail = novo;
+
+        }
+        l->tam++;
+
+    }
+    else{
+        printf("Erro ao alocar memoria.\n");
+
+    }
      
 }
-
-void imprimir_lista(No *head){
+ 
+void imprimir_lista(Lista *l){
     printf("\n\tLista de valores: ");
 
-    No *atual = head;
+    No *atual = l->head;
 
     while(atual != NULL){
         printf("|%d|", atual->valor);
@@ -104,7 +118,8 @@ int menu(){
 
 int main() {
 
-    No *lista = NULL;
+    Lista lista;
+    criar_lista(&lista);
     int op, valor, ant;
 
     do{
@@ -112,13 +127,11 @@ int main() {
         switch(op){
             case 1:
                 printf("Digite um valor: \n");
-                while(getchar() != '\n');
                 scanf("%d", &valor);
                 inserir_inicio(&lista, valor);
                 break;
             case 2:
                 printf("Digite um valor: \n");
-                while(getchar() != '\n');
                 scanf("%d", &valor);
                 printf("Digite o valor de referencia: \n");
                 scanf("%d", &ant);
@@ -126,12 +139,11 @@ int main() {
                 break;
             case 3:
                 printf("Digite um valor: \n");
-                while(getchar() != '\n');
                 scanf("%d", &valor);
                 inserir_fim(&lista, valor);
                 break;
             case 4:
-                imprimir_lista(lista);
+                imprimir_lista(&lista);
                 break;
             case 0: 
                 printf("Encerrando programa...\n");
