@@ -65,10 +65,9 @@ void inserir_meio(Lista *l, int num, int ant){
         inserir_inicio(l, num);
         return;
     }
-    
-    
-    No *novo = malloc(sizeof(No));
 
+    No *novo = malloc(sizeof(No));
+    
     if(novo){
         novo->valor = num;
         No *aux = l->head;
@@ -76,21 +75,23 @@ void inserir_meio(Lista *l, int num, int ant){
             aux = aux->proximo;
         }
 
+        if(aux->valor != ant){
+            printf("Erro: valor %d não encontrado na lista.\n", ant);
+            free(novo);
+            return;
+        }
+
         novo->proximo = aux->proximo;
         aux->proximo = novo;
 
         if(novo->proximo == NULL){
             l->tail = novo;
-
         }
         l->tam++;
-
     }
     else{
         printf("Erro ao alocar memoria.\n");
-
     }
-     
 }
  
 void imprimir_lista(Lista *l){
