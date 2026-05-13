@@ -3,11 +3,13 @@
 *.elf
 
 # Executables
-*.exe
+*.exea
 *.out
 
 # .vscode folder
 .vscode/
-.output/
+
+# Output folder
+output/
 
 *.x
