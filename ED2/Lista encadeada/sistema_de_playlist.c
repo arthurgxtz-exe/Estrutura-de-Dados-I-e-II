@@ -166,7 +166,7 @@ void dar_prioridade(Playlist *p, char alvo[]){
     }
 
     if(aux == NULL){
-        printf("Musica %s não encontrada\n");
+        printf("Musica não encontrada\n");
         return;
     }
 
