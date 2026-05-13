@@ -125,7 +125,7 @@ void remover_no(Lista *l, int alvo){
         return;
     }
     No *aux = l->head;
-    No *anterior;
+    No *anterior = NULL;
 
     while (aux != NULL && aux->valor != alvo){
 
