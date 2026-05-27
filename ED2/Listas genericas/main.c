@@ -152,10 +152,10 @@ int main() {
     list_print(minha_lista, printDisciplina);
 
     printf("\n>>> Testando Remocao do Inicio (Pop):\n");
-    Object vagao_retirado = list_pop(minha_lista);
+    Object retirado = list_pop(minha_lista);
     printf("Item removido: ");
-    printDisciplina(vagao_retirado->item);
-    destroy(vagao_retirado);
+    printDisciplina(retirado->item);
+    destroy(retirado);
 
     printf("\n>>> Lista Apos o Pop:\n");
     list_print(minha_lista, printDisciplina);
