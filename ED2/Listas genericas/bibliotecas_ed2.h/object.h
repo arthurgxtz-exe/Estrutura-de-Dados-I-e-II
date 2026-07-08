@@ -14,7 +14,9 @@ typedef enum {
     TYPE2,
     PLAYER,
     ARMA,
-    NPC
+    NPC,
+    ALUNO,
+    LIVRO
 } TypeNode;
 
 typedef struct Node {
