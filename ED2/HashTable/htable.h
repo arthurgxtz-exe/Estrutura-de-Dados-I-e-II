@@ -3,144 +3,125 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
+#include "object.h"
+#include "list.h"
 
-#ifndef new
-#define new(Type, ...) new_##Type(__VA_ARGS__)
-#endif
+typedef struct __HTable __HTable;
+typedef __HTable* HTable;
 
-typedef struct _HashNode _HashNode;
-typedef _HashNode* HashNode;
-
-typedef struct _HashTable _HashTable;
-typedef _HashTable* HashTable;
-
-struct _HashNode {
-    char key[100];
-    char value[100];
-    HashNode next;
-};
-
-struct _HashTable {
-    HashNode* buckets;
-    int capacity;
+struct __HTable {
+    List* buckets;
     int size;
+    int count;
 
-    void (*insert)(HashTable self, const char* key, const char* value);
-    const char* (*get)(HashTable self, const char* key);
-    int (*contains)(HashTable self, const char* key);
-    void (*remove)(HashTable self, const char* key);
-    void (*print)(HashTable self);
-    void (*clear)(HashTable self);
-    void (*destroy)(HashTable self);
+    void (*insert)(HTable self, int value);
+    Object (*search)(HTable self, int value);
+    void (*delete)(HTable self, int value);
+    void (*print)(HTable self);
+    void (*clear)(HTable self);
+    void (*destroy)(HTable self);
 };
 
-HashTable new_HashTable(int capacity);
+HTable new_HTable(int size);
+int htable_Hash(HTable self, int value);
+void htable_Insert(HTable self, int value);
+Object htable_Search(HTable self, int value);
+void htable_Delete(HTable self, int value);
+void htable_Print(HTable self);
+void htable_Clear(HTable self);
+void htable_Destroy(HTable self);
 
-unsigned int htable_Hash(HashTable self, const char* key);
-void htable_Insert(HashTable self, const char* key, const char* value);
-const char* htable_Get(HashTable self, const char* key);
-int htable_Contains(HashTable self, const char* key);
-void htable_Remove(HashTable self, const char* key);
-void htable_Print(HashTable self);
-void htable_Clear(HashTable self);
-void htable_Destroy(HashTable self);
+HTable new_HTable(int size) {
+    HTable ht;
+    int i;
 
-HashTable new_HashTable(int capacity) {
-    HashTable table;
-
-    if (capacity <= 0) {
-        printf("Capacidade invalida.\n");
+    if (size <= 0) {
+        printf("Tamanho invalido para a Hash Table.\n");
         return NULL;
     }
 
-    table = malloc(sizeof(_HashTable));
+    ht = malloc(sizeof(__HTable));
 
-    if (!table) {
-        printf("Erro ao alocar HashTable.\n");
+    if (!ht) {
+        printf("Erro ao alocar HTable.\n");
         exit(1);
     }
 
-    table->buckets = calloc(capacity, sizeof(HashNode));
+    ht->buckets = malloc(size * sizeof(List));
 
-    if (!table->buckets) {
+    if (!ht->buckets) {
         printf("Erro ao alocar os buckets.\n");
-        free(table);
+        free(ht);
         exit(1);
     }
 
-    table->capacity = capacity;
-    table->size = 0;
+    ht->size = size;
+    ht->count = 0;
 
-    table->insert = htable_Insert;
-    table->get = htable_Get;
-    table->contains = htable_Contains;
-    table->remove = htable_Remove;
-    table->print = htable_Print;
-    table->clear = htable_Clear;
-    table->destroy = htable_Destroy;
+    for (i = 0; i < size; i++)
+        ht->buckets[i] = new(List);
 
-    return table;
+    ht->insert = htable_Insert;
+    ht->search = htable_Search;
+    ht->delete = htable_Delete;
+    ht->print = htable_Print;
+    ht->clear = htable_Clear;
+    ht->destroy = htable_Destroy;
+
+    return ht;
 }
 
-unsigned int htable_Hash(HashTable self, const char* key) {
-    unsigned long hash = 5381;
-    int c;
+int htable_Hash(HTable self, int value) {
+    int index;
 
-    while ((c = (unsigned char) *key++) != 0)
-        hash = ((hash << 5) + hash) + c;
+    if (!self || self->size <= 0)
+        return -1;
 
-    return (unsigned int) (hash % self->capacity);
+    index = value % self->size;
+
+    if (index < 0)
+        index += self->size;
+
+    return index;
 }
 
-void htable_Insert(HashTable self, const char* key, const char* value) {
-    unsigned int index;
-    HashNode current;
-    HashNode novo;
+void htable_Insert(HTable self, int value) {
+    int index;
 
-    if (!self || !key || !value) return;
+    if (!self) return;
 
-    index = htable_Hash(self, key);
-    current = self->buckets[index];
+    if (htable_Search(self, value)) {
+        printf("Valor %d ja existe na tabela.\n", value);
+        return;
+    }
 
-    /* Se a chave ja existe, apenas atualiza o valor. */
+    index = htable_Hash(self, value);
+
+    self->buckets[index]->enqueue(
+        self->buckets[index],
+        new(TYPE1, "HTABLE", value)
+    );
+
+    self->count++;
+    printf("Valor %d inserido no bucket %d.\n", value, index);
+}
+
+Object htable_Search(HTable self, int value) {
+    int index;
+    Object current;
+
+    if (!self) return NULL;
+
+    index = htable_Hash(self, value);
+    current = self->buckets[index]->head;
+
     while (current) {
-        if (strcmp(current->key, key) == 0) {
-            snprintf(current->value, sizeof(current->value), "%s", value);
-            return;
+        if (current->type == TYPE1) {
+            Type1* item = (Type1*) current->item;
+
+            if (item && item->numero == value)
+                return current;
         }
-
-        current = current->next;
-    }
-
-    novo = malloc(sizeof(_HashNode));
-
-    if (!novo) {
-        printf("Erro ao alocar elemento da tabela.\n");
-        exit(1);
-    }
-
-    snprintf(novo->key, sizeof(novo->key), "%s", key);
-    snprintf(novo->value, sizeof(novo->value), "%s", value);
-
-    /* Insere no inicio da lista do bucket. */
-    novo->next = self->buckets[index];
-    self->buckets[index] = novo;
-    self->size++;
-}
-
-const char* htable_Get(HashTable self, const char* key) {
-    unsigned int index;
-    HashNode current;
-
-    if (!self || !key) return NULL;
-
-    index = htable_Hash(self, key);
-    current = self->buckets[index];
-
-    while (current) {
-        if (strcmp(current->key, key) == 0)
-            return current->value;
 
         current = current->next;
     }
@@ -148,56 +129,56 @@ const char* htable_Get(HashTable self, const char* key) {
     return NULL;
 }
 
-int htable_Contains(HashTable self, const char* key) {
-    return htable_Get(self, key) != NULL;
-}
+void htable_Delete(HTable self, int value) {
+    int index;
+    int position = 0;
+    Object current;
 
-void htable_Remove(HashTable self, const char* key) {
-    unsigned int index;
-    HashNode current;
-    HashNode previous = NULL;
+    if (!self) return;
 
-    if (!self || !key) return;
-
-    index = htable_Hash(self, key);
-    current = self->buckets[index];
+    index = htable_Hash(self, value);
+    current = self->buckets[index]->head;
 
     while (current) {
-        if (strcmp(current->key, key) == 0) {
-            if (previous)
-                previous->next = current->next;
-            else
-                self->buckets[index] = current->next;
+        if (current->type == TYPE1) {
+            Type1* item = (Type1*) current->item;
 
-            free(current);
-            self->size--;
-            return;
+            if (item && item->numero == value) {
+                self->buckets[index]->del(self->buckets[index], position);
+                self->count--;
+                printf("Valor %d removido.\n", value);
+                return;
+            }
         }
 
-        previous = current;
         current = current->next;
+        position++;
     }
+
+    printf("Valor %d nao encontrado.\n", value);
 }
 
-void htable_Print(HashTable self) {
+void htable_Print(HTable self) {
     int i;
 
     if (!self) return;
 
-    printf("\n----- HASH TABLE | size: %d | capacity: %d -----\n",
-           self->size, self->capacity);
+    printf("\n----- HASH TABLE | elementos: %d | buckets: %d -----\n",
+           self->count, self->size);
 
-    for (i = 0; i < self->capacity; i++) {
-        HashNode current = self->buckets[i];
+    for (i = 0; i < self->size; i++) {
+        Object current = self->buckets[i]->head;
 
         printf("[%d] ", i);
 
-        if (!current) {
+        if (!current)
             printf("vazio");
-        }
 
         while (current) {
-            printf("{%s: %s}", current->key, current->value);
+            Type1* item = (Type1*) current->item;
+
+            if (item)
+                printf("%d", item->numero);
 
             if (current->next)
                 printf(" -> ");
@@ -208,33 +189,30 @@ void htable_Print(HashTable self) {
         printf("\n");
     }
 
-    printf("-----------------------------------------------\n");
+    printf("----------------------------------------------------\n");
 }
 
-void htable_Clear(HashTable self) {
+void htable_Clear(HTable self) {
     int i;
 
     if (!self) return;
 
-    for (i = 0; i < self->capacity; i++) {
-        HashNode current = self->buckets[i];
+    for (i = 0; i < self->size; i++)
+        self->buckets[i]->clear(self->buckets[i]);
 
-        while (current) {
-            HashNode next = current->next;
-            free(current);
-            current = next;
-        }
-
-        self->buckets[i] = NULL;
-    }
-
-    self->size = 0;
+    self->count = 0;
 }
 
-void htable_Destroy(HashTable self) {
+void htable_Destroy(HTable self) {
+    int i;
+
     if (!self) return;
 
     htable_Clear(self);
+
+    for (i = 0; i < self->size; i++)
+        free(self->buckets[i]);
+
     free(self->buckets);
     free(self);
 }

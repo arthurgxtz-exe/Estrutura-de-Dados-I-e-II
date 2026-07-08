@@ -1,92 +1,95 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include "htable.h"
 
-int menu(void) {
-    int op;
+int menu() {
+    int option;
 
     printf("\n--- MENU ---\n");
-    printf("1 - Inserir ou atualizar\n");
-    printf("2 - Buscar por chave\n");
-    printf("3 - Remover por chave\n");
+    printf("1 - Inserir valor\n");
+    printf("2 - Buscar valor\n");
+    printf("3 - Excluir valor\n");
     printf("4 - Imprimir tabela\n");
     printf("5 - Mostrar quantidade\n");
     printf("0 - Sair\n");
     printf("Opcao: ");
-    scanf("%d", &op);
+    scanf("%d", &option);
 
-    return op;
+    return option;
 }
 
-int main(void) {
-    HashTable table = new(HashTable, 7);
-    int op;
+int buckets(){
+    int quant_buckets;
 
-    if (!table)
+    do{
+        printf("Quantidade de buckets da tabela: ");
+        scanf("%d", &quant_buckets);
+
+        if(quant_buckets <= 0){
+            printf("A quantidade deve ser maior que zero.\n");
+        }
+
+    }while(quant_buckets <= 0);
+
+    return quant_buckets;
+}
+
+int main() {
+   
+    HTable ht = new(HTable, buckets());
+    int option;
+
+    if (!ht)
         return 1;
-
-    /* Alguns dados iniciais para demonstrar o uso da biblioteca. */
-    table->insert(table, "A01", "Teclado");
-    table->insert(table, "A02", "Mouse");
-    table->insert(table, "A03", "Monitor");
+      
 
     do {
-        op = menu();
+        option = menu();
 
-        switch (op) {
+        switch (option) {
             case 1: {
-                char key[100];
-                char value[100];
-
-                printf("Chave: ");
-                scanf(" %99[^\n]", key);
+                int value;
 
                 printf("Valor: ");
-                scanf(" %99[^\n]", value);
+                scanf("%d", &value);
 
-                table->insert(table, key, value);
-                printf("Elemento inserido ou atualizado.\n");
+                ht->insert(ht, value);
                 break;
             }
 
             case 2: {
-                char key[100];
-                const char* value;
+                int value;
+                Object found;
 
-                printf("Chave para buscar: ");
-                scanf(" %99[^\n]", key);
+                printf("Valor para buscar: ");
+                scanf("%d", &value);
 
-                value = table->get(table, key);
+                found = ht->search(ht, value);
 
-                if (value)
-                    printf("Valor encontrado: %s\n", value);
+                if (found)
+                    printf("Valor %d encontrado.\n", value);
                 else
-                    printf("Chave nao encontrada.\n");
+                    printf("Valor %d nao encontrado.\n", value);
 
                 break;
             }
 
             case 3: {
-                char key[100];
+                int value;
 
-                printf("Chave para remover: ");
-                scanf(" %99[^\n]", key);
+                printf("Valor para excluir: ");
+                scanf("%d", &value);
 
-                if (table->contains(table, key)) {
-                    table->remove(table, key);
-                    printf("Elemento removido.\n");
-                } else {
-                    printf("Chave nao encontrada.\n");
-                }
-
+                ht->delete(ht, value);
                 break;
             }
 
             case 4:
-                table->print(table);
+                ht->print(ht);
                 break;
 
             case 5:
-                printf("Quantidade de elementos: %d\n", table->size);
+                printf("Quantidade de elementos: %d\n", ht->count);
                 break;
 
             case 0:
@@ -97,9 +100,9 @@ int main(void) {
                 printf("Opcao invalida.\n");
         }
 
-    } while (op != 0);
+    } while (option != 0);
 
-    table->destroy(table);
+    ht->destroy(ht);
 
     return 0;
 }
